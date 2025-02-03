@@ -33,16 +33,16 @@ knitr::kable(summary(model)$coef, digits = 3)
 ```
 ```{r}
 # Checking for over dispersion: 
-plot(portugal$ageMarried, portugal$family_size)
+plot(portugal$ageMarried, portugal$children)
 
 summary_stats <- portugal %>%
   group_by(ageMarried) %>%
   summarize(
-    mean_family_size = mean(family_size, na.rm = TRUE),
-    var_family_size = sd(family_size, na.rm = TRUE)^2
+    avg_n_child = mean(children, na.rm = TRUE),
+    var_n_child = sd(children, na.rm = TRUE)^2
   )
 
-summary_stats$difference = summary_stats$var_family_size - summary_stats$mean_family_size
+summary_stats$difference = summary_stats$var_n_child - summary_stats$avg_n_child
 summary_stats
 
 print(summary_stats)
