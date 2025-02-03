@@ -31,7 +31,7 @@ portugal$logMonthSM = log(portugal$monthsSinceM)
 
 # First Model: Poisson + 3 Predictors
 model1 <- glmmTMB(children ~ literacy + ageMarried + region + offest(logMonthSM), data = portugal, family = nbinom2())
-knitr::kable(summary(model)$coef, digits = 3)
+knitr::kable(summary(model1)$coef, digits = 3)
 ```
 ```{r}
 # Checking for over dispersion: 
