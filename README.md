@@ -27,8 +27,10 @@ poisDensity = poisDensity / bin_width
 points(xSeq, poisDensity, col = "red", pch = 16) # Add points
 lines(xSeq, poisDensity, col = "red", lwd = 2)   # Add connecting lines
 
-# First Model: Poisson + 2 Predictors
-model1 <- glmmTMB(children ~ literacy + ageMarried, data = portugal, family = nbinom2())
+portugal$logMonthSM = log(portugal$monthsSinceM)
+
+# First Model: Poisson + 3 Predictors
+model1 <- glmmTMB(children ~ literacy + ageMarried + region + offest(logMonthSM), data = portugal, family = nbinom2())
 knitr::kable(summary(model)$coef, digits = 3)
 ```
 ```{r}
