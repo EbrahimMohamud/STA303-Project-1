@@ -1,8 +1,7 @@
 # STA303-Project-1
-
 ```{r}
-install.packages("glmmTMB")
-install.packages("tidyverse")
+#install.packages("glmmTMB")
+#install.packages("tidyverse")
 library("tidyverse")
 library('glmmTMB')
 
@@ -27,13 +26,13 @@ poisDensity = poisDensity / bin_width
 points(xSeq, poisDensity, col = "red", pch = 16) # Add points
 lines(xSeq, poisDensity, col = "red", lwd = 2)   # Add connecting lines
 
-portugal$logMonthSM = log(portugal$monthsSinceM)
+portugal$logMonthSM = log(pmax(1, portugal$monthsSinceM))
 
 # First Model: Poisson + 3 Predictors
-model1 <- glmmTMB(children ~ literacy + ageMarried + region + offest(logMonthSM), data = portugal, family = nbinom2())
+model1 <- glmmTMB(children ~ literacy + ageMarried + region, data = portugal, family = nbinom2())
+
 knitr::kable(summary(model1)$coef, digits = 3)
-```
-```{r}
+
 # Checking for over dispersion: 
 plot(portugal$ageMarried, portugal$children)
 
@@ -46,6 +45,4 @@ summary_stats <- portugal %>%
 
 summary_stats$difference = summary_stats$var_n_child - summary_stats$avg_n_child
 summary_stats
-
-print(summary_stats)
 ```
