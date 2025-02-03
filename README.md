@@ -46,3 +46,16 @@ summary_stats <- portugal %>%
 summary_stats$difference = summary_stats$var_n_child - summary_stats$avg_n_child
 summary_stats
 ```
+
+```{r}
+#install.packages("jtools")
+#install.packages("broom.mixed")
+library("jtools")
+library("broom.mixed")
+model_overdispersion <- glmmTMB(family_size ~ literacy + ageMarried + region, data = portugal, family = nbinom2())
+knitr::kable(summary(model_overdispersion)$coef, digits = 3)
+
+plot_summs(model1, model_overdispersion, omit.corefs = F, model.names = c("w/out offset", "overdispersion"), exp = F)
+
+```
+
