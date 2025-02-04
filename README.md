@@ -59,3 +59,23 @@ plot_summs(model1, model_overdispersion, omit.corefs = F, model.names = c("w/out
 
 ```
 
+
+```r
+# MODEL TESTING
+
+# This was me trying an offset, decided not to go with it
+portugal$logMonthsSM <- log(portugal$monthsSinceM)
+portugal <- portugal %>%
+  filter(logMonthsSM >= 0)
+
+# Same base model
+model1 <- glm(family_size ~ literacy + region + ageMarried, data = portugal, family = poisson())
+knitr::kable(summary(model1)$coef, digits = 3)
+
+# Interaction between region and ageMarried
+model2 <- glmmTMB(family_size ~ literacy + region*ageMarried, data = portugal, family = nbinom2())
+knitr::kable(summary(model2)$coef, digits = 3)
+
+plot_summs(model1, model2, omit.coefs = F, model.names = c("base", "overdispersion & interaction"))
+
+```
