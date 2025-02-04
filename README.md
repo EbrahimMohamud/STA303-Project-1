@@ -19,7 +19,7 @@ xSeq = 0:20  # Only integers
 poisDensity = dpois(xSeq, lambda = lambda)
 
 # Convert PMF to density scale by adjusting for bin width
-bin_width = diff(hist(portugal$family, plot = FALSE)$breaks)[1]
+bin_width = diff(hist(portugal$children, plot = FALSE)$breaks)[1]
 poisDensity = poisDensity / bin_width
 
 # Overlay the density-scaled Poisson distribution
