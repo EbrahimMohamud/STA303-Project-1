@@ -52,7 +52,7 @@ summary_stats
 #install.packages("broom.mixed")
 library("jtools")
 library("broom.mixed")
-model_overdispersion <- glmmTMB(family_size ~ literacy + ageMarried + region, data = portugal, family = nbinom2())
+model_overdispersion <- glmmTMB(children ~ literacy + ageMarried + region, data = portugal, family = nbinom2())
 knitr::kable(summary(model_overdispersion)$coef, digits = 3)
 
 plot_summs(model1, model_overdispersion, omit.corefs = F, model.names = c("w/out offset", "overdispersion"), exp = F)
@@ -60,7 +60,7 @@ plot_summs(model1, model_overdispersion, omit.corefs = F, model.names = c("w/out
 ```
 
 
-```r
+```{r}
 # MODEL TESTING
 
 # This was me trying an offset, decided not to go with it
