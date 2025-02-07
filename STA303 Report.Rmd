@@ -1,0 +1,242 @@
+---
+title: "STA303 Report"
+author: "Rebecca Li & Ebrahim Mohamud"
+date: "2025-02-07"
+output: pdf_document
+header-includes:
+  - \usepackage{setspace}   # Enables double spacing
+  - \usepackage{setspace}
+  - \setstretch{1.29}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+#install.packages("tidyverse")
+#install.packages("jtools")
+#install.packages("broom.mixed")
+#install.packages('glmmTMB')
+library(tidyverse)
+library("jtools")
+library("broom.mixed")
+library("glmmTMB")
+```
+
+# Introduction
+Family size is one of the most critical and statistically relevant markers of a countries social and economics condition. Measuring the change in family size serves as an good indicator for birth rates, fertility rates, and population growth which have broad social and economic consequences. Understanding the various factors which explain changes in family size is therefore an essential statistical measure.  
+
+Infertility and personal preferences are well-established factors behind the number of children that a couple has. However, the influences behind family size span beyond personal or biological reasons, often tracing to socioeconomic factors and time influences. Impacts such as the age of marriage and literacy demonstrate a strong relationship to family size, particularly in the context of developing countries, where children are utilized as a source of labour and less likely to survive to adulthood compared to their developed country counterparts (Freedman, 1963). These findings are relevant to the context of the present report, which analyzes data from the underdeveloped country of Portugal in order to investigate the primary factors behind family size, allowing for more accurate projections and predictions of future population trends. 
+
+Further inquiring into the influences on family size, Freedman (1963) highlights the significance of marrying and having children at a younger age, which serves as a protective measure in case of a parent or child dying, relaying the importance of age of marriage in the number of children. Furthermore, related studies of undeveloped countries have demonstrated that literacy can also play a significant role. In a study of 178 males in Chakwal city, Punjab, Mahmood et al. (2016) found that a minority of uneducated men were in favour of smaller families (19.2%) compared to a majority of educated men (77.0%). Mahmood et al. also established that one leading motivation behind larger families in uneducated males was the desire for a son. Together, these two factors played a primary role in motivating our research question.
+
+Previously, we discussed the implications of a country’s developmental stage, however, there may also be within-country factors to consider. In particular, the differences between urban and rural regions have demonstrated significant impacts on family size. Gutkind (1962) conducted an observational study of married African women in rural and urban areas, concluding that urban populations tend to have smaller families than rural populations, attributing this phenomenon to factors such as high costs of urban living. The significance of these results encouraged us to consider an additional variable of “region”. The present report expands on the results from the aforementioned studies, using them to guide our analysis of fertility data from a 1979 study of Portuguese families in order to answer the motivating research question: “How do literacy, region, and age of a marriage affect family size?”. Specifically, our analysis focuses on using a generalized linear regression model to explain variation in family size through the aforementioned variables. Our analysis will involve justifying our model choice, fitting our model, interpreting the results, and outlining the possible limitations present in our findings.   
+
+# Methods
+To answer our research question, we began by plotting the response variable, children, in a histogram to examine its distribution. Since the number of children is a count variable distributed over a unit of time, the only appropriate model for this data is a Poisson model. To establish further support for our model choice, we fit a Poisson fitted line with a chosen parameter based on the global mean, as well as the means from the various level within the "age married" predictor (the main predictor in our model) to determine if they matched the data. This initial visual assessment is captured in Figure 1 below and illustrates that a Poisson model is a reasonable fit for our data. 
+
+Before committing to a Poisson model, we need to ensure all the Poisson assumptions are met within our data. Therefore, we proceeded by checking whether the mean and variance of each age group within the "age married" variable equated or whether they didn't. As Figure 2 illustrates, there is a positive gap between the variances and means suggesting possible overdispersion in the data. Therefore, we decided to create two models: A Poisson regression model featuring "age married", "literacy", and "Region" as predictor variables and a Negative Binomial model which features the same predictors except accounts for overdispersion. We conclude our analysis by first interpreting then comparing the two model estimates and confidence intervals to measure which model more appropriately serves to answer our research question. 
+
+We chose to include "Region" in addition to the "age married" and "literacy" variables specific to the research question because of the surrounding literature by Peter Gutkind which emphasized the explanitory power of the "Region" variable. Specifically that rural families produce significantly more children that their urban counterparts. Additionally we included an offset in both models to account for variation in exposure times. The offset ensure that each observation yields an estimated rate with a standard time unit of one year, thereby maintaining a consistent interpretation of the intensity of births across our data. Adding the offset is essential to our research question since meaningfully estimating the birth intensity across each family fully specifies our regression model. 
+
+
+# Results
+Our dataset includes 5148 observations of married couples from Portugal in the year 1979 with information such as the age of marriage, literacy status, the number of children, the months since married, etc. Our research question specifically focus on how much the first two variables explain variation in the number of children a family produces. Visualizing our data as in Figure 1, we witness a large right skew with a mean of 2.26 and a standard deviation of 1.86. Graphically, the Poisson model appears to be a reasonable fit, both overall and across the different categories of the age at marriage predictor variable. To improve balance across categories, we redefined the age brackets to ensure that each level contains a roughly equal number of observations. This adjustment was made to avoid sparsely populated categories, which could lead to unstable estimates and reduced reliability in our analysis. 
+
+```{r dataDownload, include=FALSE}
+pUrl = 'http://wfs.dhsprogram.com/pt/ptsr01.dat'
+pName = file.path(tempdir(), 'portugal.dat')
+if(!file.exists(pName)) {
+  download.file(pUrl, pName)
+}
+
+datNames = rbind(
+		age=c(45,2),
+		ageMarried=c(149,2), 
+		monthsSinceM = c(157,4),
+#		failedPregnancies=c(421,2),
+#		failedPregStill=c(423,2),
+#		failedPregSpAb=c(425,2),
+		pregnancies=c(433,2),
+		children=c(435,2),
+		sons=c(443,2),
+#		firstBirthInterval = c(479,2),
+		region = c(641,2),
+		literacy = c(649,2)
+)
+		colnames(datNames ) = c('start','len')
+		datNames = cbind(startm1=datNames[,1]-1,datNames, sum=apply(datNames, 1,sum))
+		cbind(datNames[-1,1] , datNames[seq(1, nrow(datNames)-1),4])
+		datNames[-1,1] = datNames[-1,2] - datNames[seq(1, nrow(datNames)-1),4]
+		dWidths = as.vector(t(datNames[,c(1,3)]))
+		dNames = paste(rep(rownames(datNames), rep(2, nrow(datNames))),
+  	rep(c( "junk",""), nrow(datNames)), sep="") 
+		
+		dNames = dNames[dWidths > 0]
+		dWidths = dWidths[dWidths > 0]
+		
+		formats = list(
+			ageMarried = data.frame(code=1:7,  label=c(0,15,18,20,22,25,30)),
+			region = data.frame(code=1:5, 
+				label=c('lisbon','porto','20k+', '10-20k', 'lt10k')),
+			literacy = data.frame(code=1:2, label=c('yes','no')),
+			firstBirthInterval = data.frame(
+					code = 1:8,
+					label = c(
+							'lt0','0-7', '8-11','12-23',
+							'24-35','36-47','48-59','60-Inf'
+							)
+					)
+		)
+
+		formats$ageMarried$label = 
+  	paste(formats$ageMarried$label, 'to',
+  	c(formats$ageMarried$label[-1], 'Inf'), sep='')
+  	formats$ageMarried = rbind(formats$ageMarried, data.frame(code=88, label='never'))
+
+   
+  portugal = read.fwf(
+    pName,
+    dWidths, col.names=dNames,
+    header=FALSE)
+  
+  portugal = portugal[,grep("junk$", names(portugal), invert=TRUE)]
+
+for(D in intersect(names(portugal), names(formats))){
+  		portugal[[D]] = factor(portugal[[D]],
+  			levels=formats[[D]]$code, 
+				labels=formats[[D]]$label)
+}
+portugal$ageMarried = relevel(portugal$ageMarried, '22to25')
+portugal$region = relevel(portugal$region, 'lt10k')
+
+if(FALSE) save(portugal, file='portugal.RData')
+```
+
+```{r, include=FALSE}
+# Combine First Case
+portugal <- portugal %>%
+  mutate(ageMarried = case_when(
+    ageMarried %in% c("0to15", "15to18", "18to20") ~ "0to20",  # Combine into "0to20"
+    TRUE ~ ageMarried  # Keep other categories unchanged
+  ))
+
+# Combine Second Case
+portugal <- portugal %>%
+  mutate(ageMarried = case_when(
+    ageMarried %in% c("25to30", "30toInf") ~ "30+",  # Combine into "0to20"
+    TRUE ~ ageMarried  # Keep other categories unchanged
+  ))
+
+# Roughly Equal Groupings
+portugal %>%
+  group_by(ageMarried) %>%
+  summarize(Count = n())
+```
+
+```{r fig.cap="Histogram with Poisson Density Curves", echo=FALSE}
+# Plot histogram with density scaling
+hist(portugal$children, probability = TRUE, main = "Histogram with Poisson Density Curves", xlab = "Family Size", ylab = "Density", col = "gray", border = "black")
+
+# Calculate lambda (mean of children): For each group
+lambda_all = mean(portugal$children)
+lambda_0to20 = mean(portugal$children[portugal$ageMarried == "0to20"])
+lambda_20to22 = mean(portugal$children[portugal$ageMarried == "20to22"])
+lambda_22to25 = mean(portugal$children[portugal$ageMarried == "22to25"])
+lambda_30plus = mean(portugal$children[portugal$ageMarried == "30+"])
+
+
+# Generate integer sequence (Poisson is discrete)
+xSeq = 0:20  # Only integers
+
+# Use to convert PMF's to density scale by adjusting for bin width:
+bin_width = diff(hist(portugal$children, plot = FALSE)$breaks)[1]
+
+# Compute Poisson (PMF's) and scale it to density
+pois_all = dpois(xSeq, lambda = lambda_all) / bin_width
+pois_0to20 = dpois(xSeq, lambda = lambda_0to20) / bin_width
+pois_20to22 = dpois(xSeq, lambda = lambda_20to22) / bin_width
+pois_22to25 = dpois(xSeq, lambda = lambda_22to25) / bin_width
+pois_30plus = dpois(xSeq, lambda = lambda_30plus) / bin_width
+
+# Overlay the density-scaled Poisson distribution
+points(xSeq, pois_all, col = "black", pch = 16) # Add points
+lines(xSeq, pois_all, col = "black", lwd = 2)   # Add connecting lines
+
+# Overlay the density-scaled Poisson distribution
+points(xSeq, pois_0to20, col = "red", pch = 16) # Add points
+lines(xSeq, pois_0to20, col = "red", lwd = 2)   # Add connecting lines
+
+# Overlay the density-scaled Poisson distribution
+points(xSeq, pois_20to22, col = "yellow", pch = 16) # Add points
+lines(xSeq, pois_20to22, col = "yellow", lwd = 2)   # Add connecting lines
+
+# Overlay the density-scaled Poisson distribution
+points(xSeq, pois_22to25, col = "green", pch = 16) # Add points
+lines(xSeq, pois_22to25, col = "green", lwd = 2)   # Add connecting lines
+
+# Overlay the density-scaled Poisson distribution
+points(xSeq, pois_30plus, col = "purple", pch = 16) # Add points
+lines(xSeq, pois_30plus, col = "purple", lwd = 2)   # Add connecting lines
+
+
+# Add a legend
+legend("topright", 
+       legend = c("All", "0-20", "20-22", "22-25", "30+"), 
+       col = c("black", "red", "yellow", "green", "purple"), 
+       pch = 16, lwd = 2, 
+       bg = "gray90") # Light gray background for better visibility
+
+```
+
+While the Poisson model appears to visually match the data, a critical Poisson assumption is violated, namely that the mean and variance of each category dont equate. The table below illustrates this violation well as a the variance-mean gap is positive, suggesting potential overdispersion and leading us to favour a Negative Binomial model over a Poisson. 
+
+
+---------------------------- TODO!!! -----------------------
+.... 
+```{r summary_stats, echo=FALSE}
+summary_stats <- portugal |>
+  group_by(ageMarried) |>
+  summarize(
+    mean_number_child = mean(children, na.rm = TRUE),
+    variance_number_child = (sd(children, na.rm = TRUE))^2, 
+    var_mean_gap = variance_number_child - mean_number_child
+  ) |>
+  setNames(c("Age Married", "Mean Num Children", "Variance Num Children", "Variance-Mean Gap")) |>
+  as.data.frame()  # Ensures it prints without quotes
+
+knitr::kable(summary_stats, digits = 3)
+```
+
+To truly compare the two models we must compare their model estimates and ...
+
+
+```{r}
+# Poisson Model
+portugal$logMonthSM = log(pmax(1, portugal$monthsSinceM)/12) # lambda_i = Intensity Per Year
+poisson_mod <- glm(children ~ ageMarried + literacy + region + offset(logMonthSM), data = portugal, family = poisson(link = "log"))
+
+knitr::kable(summary(model1)$coef, digits = 3)
+
+# Negtive Binomial Model
+negbin_mod <- glmmTMB(children ~ literacy + ageMarried + region + offset(logMonthSM), data = portugal, family = nbinom2())
+
+knitr::kable(summary(negbin_mod)$coef, digits = 3)
+
+
+plot_summs(poisson_mod, negbin_mod, omit.corefs = F, model.names = c("w/offset", "w/offest & overdispersion"), exp = F)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
