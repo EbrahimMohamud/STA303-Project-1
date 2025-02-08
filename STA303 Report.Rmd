@@ -117,7 +117,7 @@ portugal <- portugal %>%
 
 portugal <- portugal %>%
   mutate(ageMarried = case_when(
-    ageMarried %in% c("25to30", "30toInf") ~ "25+",  # Combine into "0to20"
+    ageMarried %in% c("25to30", "30toInf") ~ "25+",  # Combine into "25+"
     TRUE ~ ageMarried  # Keep other categories unchanged
   ))
 ```
