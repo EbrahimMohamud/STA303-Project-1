@@ -286,9 +286,9 @@ In particular, the variable *literacy* under the Negative Binomial model had an 
 Our final model results indicate that marrying later as well as higher literacy status is generally associated with having fewer children, with indications of overdispersion and the need for an offset within the data. Our Negative Binomial model seems to be an appropriate fit for the 1979 Portugal fertility data, demonstrating a significant relationship between literacy, region, and family size, with room for further investigation of the age of a marriage, in order to deeper understand the population behaviors and trends. 
 
 # References:
-Freedman, R. (1963). Norms for family size in underdeveloped areas. *Proceedings of the Royal Society of London. Series B. Biological Sciences*, **159**(974), 220–245. \url{https://doi.org/10.1098/rspb.1963.0074} 
+Freedman, R. (1963). Norms for family size in underdeveloped areas. *Proceedings of the Royal Society of London. Series B. Biological Sciences*, **159**(974), 220–245. https://doi.org/10.1098/rspb.1963.0074
 
-Gutkind, Peter C. W. (1962). African Urban Family Life: Comment on and Analysis of Some Rural-Urban Differences. *Cahiers d’Études Africaines*, **3**(10), 149–217. \url{http://www.jstor.org/stable/4390830}
+Gutkind, Peter C. W. (1962). African Urban Family Life: Comment on and Analysis of Some Rural-Urban Differences. *Cahiers d’Études Africaines*, **3**(10), 149–217. http://www.jstor.org/stable/4390830
 
 Mahmood, H., Khan, Z., & Masood, S. (2016). Effects of male literacy on family size: A cross sectional study conducted in Chakwal city. *Journal of the Pakistan Medical Association*, **66**(4), 399–403
 
