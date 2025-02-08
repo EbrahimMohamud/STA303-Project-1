@@ -1,14 +1,3 @@
----
-title: "STA303 Assignment 1"
-author: "Rebecca Li & Ebrahim Mohamud"
-output: pdf_document
-header-includes:
-  - \usepackage{setspace}
-  - \usepackage{caption}
-  - \captionsetup{width=\textwidth}
-  - \setstretch{1.29}
----
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 #install.packages("tidyverse")
