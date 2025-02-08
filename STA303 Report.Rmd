@@ -1,10 +1,9 @@
 ---
-title: "STA303 Report"
+title: "STA303 Assignment 1"
 author: "Rebecca Li & Ebrahim Mohamud"
-date: "2025-02-07"
 output: pdf_document
 header-includes:
-  - \usepackage{setspace}   # Enables double spacing
+  - \usepackage{setspace}
   - \usepackage{setspace}
   - \setstretch{1.29}
 ---
@@ -22,24 +21,24 @@ library("glmmTMB")
 ```
 
 # Introduction
-Family size is one of the most critical and statistically relevant markers of a countries social and economics condition. Measuring the change in family size serves as an good indicator for birth rates, fertility rates, and population growth which have broad social and economic consequences. Understanding the various factors which explain changes in family size is therefore an essential statistical measure.  
+Family size is a powerful reflection of a country's social and economic landscape, making it a crucial area of study. Changes in family size over time influence birth rates, fertility rates, and population growth—key drivers of economic stability and social welfare. Analyzing the factors that shape family size provides us with valuable insight into demographic shifts which leads to effective policy implementation. 
 
-Infertility and personal preferences are well-established factors behind the number of children that a couple has. However, the influences behind family size span beyond personal or biological reasons, often tracing to socioeconomic factors and time influences. Impacts such as the age of marriage and literacy demonstrate a strong relationship to family size, particularly in the context of developing countries, where children are utilized as a source of labour and less likely to survive to adulthood compared to their developed country counterparts (Freedman, 1963). These findings are relevant to the context of the present report, which analyzes data from the underdeveloped country of Portugal in order to investigate the primary factors behind family size, allowing for more accurate projections and predictions of future population trends. 
+While fertility and personal preferences are well-established factors behind the number of children that a couple has, the influences behind family size span beyond personal or biological reasons, often tracing to socio-economic and time factors. Freedman (1963) argues that the high birth rates in underdeveloped countries can largely be attributed to social factors such as the age of marriage and cultural norms around abortions. This is especially pronounced in developing countries, where children are utilized as a source of labor and less likely to survive to adulthood compared to their developed country counterparts (Freedman, 1963). These findings are relevant to the context of the present report, which analyzes data from the underdeveloped country of Portugal in order to investigate the primary factors behind family size, allowing for more accurate projections and predictions of future population trends. 
 
-Further inquiring into the influences on family size, Freedman (1963) highlights the significance of marrying and having children at a younger age, which serves as a protective measure in case of a parent or child dying, relaying the importance of age of marriage in the number of children. Furthermore, related studies of undeveloped countries have demonstrated that literacy can also play a significant role. In a study of 178 males in Chakwal city, Punjab, Mahmood et al. (2016) found that a minority of uneducated men were in favour of smaller families (19.2%) compared to a majority of educated men (77.0%). Mahmood et al. also established that one leading motivation behind larger families in uneducated males was the desire for a son. Together, these two factors played a primary role in motivating our research question.
+Freedman (1963) also highlights the importance of age of marriage on the number of children had, citing that underdeveloped areas witness high birth rates to compensate for high mortality rates prompting people to marry and having children at a younger age. Furthermore, related studies of undeveloped countries demonstrate that literacy can also play a significant role. In a study of 178 males in Chakwal city, Punjab, Mahmood et al. (2016) found that a minority of uneducated men were in favour of smaller families (19.2%) compared to a majority of educated men (77.0%). Mahmood et al. also established that one leading motivation behind larger families in uneducated males was the desire for a son. Together, these two factors played a primary role in motivating our research question.
 
-Previously, we discussed the implications of a country’s developmental stage, however, there may also be within-country factors to consider. In particular, the differences between urban and rural regions have demonstrated significant impacts on family size. Gutkind (1962) conducted an observational study of married African women in rural and urban areas, concluding that urban populations tend to have smaller families than rural populations, attributing this phenomenon to factors such as high costs of urban living. The significance of these results encouraged us to consider an additional variable of “region”. The present report expands on the results from the aforementioned studies, using them to guide our analysis of fertility data from a 1979 study of Portuguese families in order to answer the motivating research question: “How do literacy, region, and age of a marriage affect family size?”. Specifically, our analysis focuses on using a generalized linear regression model to explain variation in family size through the aforementioned variables. Our analysis will involve justifying our model choice, fitting our model, interpreting the results, and outlining the possible limitations present in our findings.   
+Finally, while a country’s stage of development is crucial for understanding variations in family size, internal factors such as differences between urban and rural regions also play a significant role. Gutkind (1962) conducted an observational study of married African women in rural and urban areas, concluding that urban populations tend to have smaller families than rural populations, attributing this phenomenon to high cost of urban living. The significance of these results encouraged us to consider an additional variable of *region* in our model. The present report expands on the results from the aforementioned studies, using them to guide our analysis of fertility data from a 1979 study of Portuguese families in order to answer the motivating research question: “How do literacy, region, and age of a marriage affect family size?”. Specifically, our analysis employs a generalized linear regression model to explain variations in family size based on the aforementioned variables.  We will justify our model choice, interpret the results, and discuss potential limitations, ultimately providing a comprehensive answer to our research question.  
+
 
 # Methods
-To answer our research question, we began by plotting the response variable, children, in a histogram to examine its distribution. Since the number of children is a count variable distributed over a unit of time, the only appropriate model for this data is a Poisson model. To establish further support for our model choice, we fit a Poisson fitted line with a chosen parameter based on the global mean, as well as the means from the various level within the "age married" predictor (the main predictor in our model) to determine if they matched the data. This initial visual assessment is captured in Figure 1 below and illustrates that a Poisson model is a reasonable fit for our data. 
+To answer our research question, we first required a specific functional form for the generalized linear model we are employing. Since the number of children is a count variable distributed over a unit of time, the only appropriate model for this data is a Poisson model. We conducted a preliminary exploratory data analysis (EDA) by visualizing the data through a histogram and observed whether the data satisfied the properties of a Poisson model. Additionally, we compared the mean and variance of each age group within the *age married* variable to assess whether they met the Poisson assumption that the mean must equal the variance. Overdispersion is present when the mean and variance don't equate, therefore, we decided to create two models: A Poisson regression model featuring *age married*, *literacy*, and *region* as predictor variables and a Negative Binomial model which features the same predictors while accounting for overdispersion. 
 
-Before committing to a Poisson model, we need to ensure all the Poisson assumptions are met within our data. Therefore, we proceeded by checking whether the mean and variance of each age group within the "age married" variable equated or whether they didn't. As Figure 2 illustrates, there is a positive gap between the variances and means suggesting possible overdispersion in the data. Therefore, we decided to create two models: A Poisson regression model featuring "age married", "literacy", and "Region" as predictor variables and a Negative Binomial model which features the same predictors except accounts for overdispersion. We conclude our analysis by first interpreting then comparing the two model estimates and confidence intervals to measure which model more appropriately serves to answer our research question. 
+We included *region* in addition to the *age married* and *literacy* variables specific to the research question because of the surrounding literature by Gutkind (1962) which emphasized that rural families have significantly more children than their urban counterparts. Additionally we included an offset in both models to account for variation in exposure times. The offset ensure that each observation yields an estimated rate with a standard time unit of one year, thereby maintaining a consistent interpretation of the intensity of births across our data. Adding the offset is essential to our research question since meaningfully estimating the birth intensity across each family fully specifies our regression model. 
 
-We chose to include "Region" in addition to the "age married" and "literacy" variables specific to the research question because of the surrounding literature by Peter Gutkind which emphasized the explanitory power of the "Region" variable. Specifically that rural families produce significantly more children that their urban counterparts. Additionally we included an offset in both models to account for variation in exposure times. The offset ensure that each observation yields an estimated rate with a standard time unit of one year, thereby maintaining a consistent interpretation of the intensity of births across our data. Adding the offset is essential to our research question since meaningfully estimating the birth intensity across each family fully specifies our regression model. 
-
+We conclude our analysis by comparing the two models based on their estimated coefficients, p-values, confidence intervals, and standard errors. This evaluation allows us to determine which model better captures the relationship between the predictors and the number of children while accounting for overdispersion. The results of the better model according to the above metrics will be interpreted, providing meaningful insights that directly address our research question.
 
 # Results
-Our dataset includes 5148 observations of married couples from Portugal in the year 1979 with information such as the age of marriage, literacy status, the number of children, the months since married, etc. Our research question specifically focus on how much the first two variables explain variation in the number of children a family produces. Visualizing our data as in Figure 1, we witness a large right skew with a mean of 2.26 and a standard deviation of 1.86. Graphically, the Poisson model appears to be a reasonable fit, both overall and across the different categories of the age at marriage predictor variable. To improve balance across categories, we redefined the age brackets to ensure that each level contains a roughly equal number of observations. This adjustment was made to avoid sparsely populated categories, which could lead to unstable estimates and reduced reliability in our analysis. 
+Our dataset consists of 5,148 observations of married couples from 1979 Portugal, capturing key demographic details such as age at marriage, literacy status, number of children, months since marriage, and region. Since we are interested in how age at marriage, literacy status, and region contribute to variations in family size, we plotted a histogram visualizing our data with respect to our response (the number of children). The histogram (as in Figure 1) exhibits a large right skew with a mean (center) of 2.26 and a standard deviation (spread) of 1.86. To establish further support for our chosen Poisson GLM, we fit a Poisson fitted line with parameters based on the global mean, as well as the means from the various levels within the *age married* predictor to determine if they matched the data. This initial visual assessment illustrates that a Poisson model is a reasonable fit both overall and across the different categories of the age at marriage predictor variable. To improve balance across categories, we redefined the age brackets to ensure each level contained a roughly equal number of observations. This adjustment helped prevent sparsely populated categories, reducing the risk of unstable estimates and enhancing the reliability of our analysis.
 
 ```{r dataDownload, include=FALSE}
 pUrl = 'http://wfs.dhsprogram.com/pt/ptsr01.dat'
@@ -109,39 +108,30 @@ portugal$ageMarried = relevel(portugal$ageMarried, '22to25')
 portugal$region = relevel(portugal$region, 'lt10k')
 
 if(FALSE) save(portugal, file='portugal.RData')
-```
 
-```{r, include=FALSE}
-# Combine First Case
 portugal <- portugal %>%
   mutate(ageMarried = case_when(
     ageMarried %in% c("0to15", "15to18", "18to20") ~ "0to20",  # Combine into "0to20"
     TRUE ~ ageMarried  # Keep other categories unchanged
   ))
 
-# Combine Second Case
 portugal <- portugal %>%
   mutate(ageMarried = case_when(
-    ageMarried %in% c("25to30", "30toInf") ~ "30+",  # Combine into "0to20"
+    ageMarried %in% c("25to30", "30toInf") ~ "25+",  # Combine into "0to20"
     TRUE ~ ageMarried  # Keep other categories unchanged
   ))
-
-# Roughly Equal Groupings
-portugal %>%
-  group_by(ageMarried) %>%
-  summarize(Count = n())
 ```
 
-```{r fig.cap="Histogram with Poisson Density Curves", echo=FALSE}
+```{r}
 # Plot histogram with density scaling
-hist(portugal$children, probability = TRUE, main = "Histogram with Poisson Density Curves", xlab = "Family Size", ylab = "Density", col = "gray", border = "black")
+hist(portugal$children, probability = TRUE, main = "Histogram of the Number of Children", xlab = "Family Size", ylab = "Density", col = "gray", border = "black")
 
 # Calculate lambda (mean of children): For each group
 lambda_all = mean(portugal$children)
 lambda_0to20 = mean(portugal$children[portugal$ageMarried == "0to20"])
 lambda_20to22 = mean(portugal$children[portugal$ageMarried == "20to22"])
 lambda_22to25 = mean(portugal$children[portugal$ageMarried == "22to25"])
-lambda_30plus = mean(portugal$children[portugal$ageMarried == "30+"])
+lambda_25plus = mean(portugal$children[portugal$ageMarried == "25+"])
 
 
 # Generate integer sequence (Poisson is discrete)
@@ -155,11 +145,11 @@ pois_all = dpois(xSeq, lambda = lambda_all) / bin_width
 pois_0to20 = dpois(xSeq, lambda = lambda_0to20) / bin_width
 pois_20to22 = dpois(xSeq, lambda = lambda_20to22) / bin_width
 pois_22to25 = dpois(xSeq, lambda = lambda_22to25) / bin_width
-pois_30plus = dpois(xSeq, lambda = lambda_30plus) / bin_width
+pois_25plus = dpois(xSeq, lambda = lambda_25plus) / bin_width
 
 # Overlay the density-scaled Poisson distribution
-points(xSeq, pois_all, col = "black", pch = 16) # Add points
-lines(xSeq, pois_all, col = "black", lwd = 2)   # Add connecting lines
+points(xSeq, pois_all, col = "purple", pch = 16) # Add points
+lines(xSeq, pois_all, col = "purple", lwd = 2)   # Add connecting lines
 
 # Overlay the density-scaled Poisson distribution
 points(xSeq, pois_0to20, col = "red", pch = 16) # Add points
@@ -170,29 +160,25 @@ points(xSeq, pois_20to22, col = "yellow", pch = 16) # Add points
 lines(xSeq, pois_20to22, col = "yellow", lwd = 2)   # Add connecting lines
 
 # Overlay the density-scaled Poisson distribution
-points(xSeq, pois_22to25, col = "green", pch = 16) # Add points
-lines(xSeq, pois_22to25, col = "green", lwd = 2)   # Add connecting lines
+points(xSeq, pois_22to25, col = "lightblue", pch = 16) # Add points
+lines(xSeq, pois_22to25, col = "lightblue", lwd = 2)   # Add connecting lines
 
 # Overlay the density-scaled Poisson distribution
-points(xSeq, pois_30plus, col = "purple", pch = 16) # Add points
-lines(xSeq, pois_30plus, col = "purple", lwd = 2)   # Add connecting lines
-
+points(xSeq, pois_25plus, col = "black", pch = 16) # Add points
+lines(xSeq, pois_25plus, col = "black", lwd = 2)   # Add connecting lines
 
 # Add a legend
 legend("topright", 
-       legend = c("All", "0-20", "20-22", "22-25", "30+"), 
-       col = c("black", "red", "yellow", "green", "purple"), 
+       legend = c("All Ages", "0-20", "20-22", "22-25", "25+"), 
+       col = c("purple", "red", "yellow", "lightblue", "black"), 
        pch = 16, lwd = 2, 
        bg = "gray90") # Light gray background for better visibility
 
 ```
 
-While the Poisson model appears to visually match the data, a critical Poisson assumption is violated, namely that the mean and variance of each category dont equate. The table below illustrates this violation well as a the variance-mean gap is positive, suggesting potential overdispersion and leading us to favour a Negative Binomial model over a Poisson. 
+Before committing to a Poisson model, we needed to ensure all the Poisson assumptions were met within our data. Therefore, we proceeded by checking whether the mean and variance of each age group within the *age married* variable equated or whether they didn't. As Table 1 illustrates, there is a positive gap between the variances and means suggesting possible overdispersion in the data. Therefore, our analysis compares a Poisson regression model against a Negative Binomial model according to their estimated coefficients, p-values, confidence intervals, and standard errors to determine which model more appropriately answers our research question.   
 
-
----------------------------- TODO!!! -----------------------
-.... 
-```{r summary_stats, echo=FALSE}
+```{r}
 summary_stats <- portugal |>
   group_by(ageMarried) |>
   summarize(
@@ -203,40 +189,122 @@ summary_stats <- portugal |>
   setNames(c("Age Married", "Mean Num Children", "Variance Num Children", "Variance-Mean Gap")) |>
   as.data.frame()  # Ensures it prints without quotes
 
-knitr::kable(summary_stats, digits = 3)
+knitr::kable(summary_stats, digits = 3, caption = "...")
 ```
 
-To truly compare the two models we must compare their model estimates and ...
-
-
-```{r}
+```{r, include=FALSE}
 # Poisson Model
 portugal$logMonthSM = log(pmax(1, portugal$monthsSinceM)/12) # lambda_i = Intensity Per Year
 poisson_mod <- glm(children ~ ageMarried + literacy + region + offset(logMonthSM), data = portugal, family = poisson(link = "log"))
 
-knitr::kable(summary(model1)$coef, digits = 3)
+# Table For Poisson: On Natural Scale
+poisson_CI = as.data.frame(exp(confint(poisson_mod)))
+coefficients <- summary(poisson_mod)$coef[, "Estimate"]
+test <- summary(poisson_mod)$coef[, "z value"]
+st_error <- summary(poisson_mod)$coef[, "Std. Error"] 
+pvalue <- summary(poisson_mod)$coef[, "Pr(>|z|)"] 
 
-# Negtive Binomial Model
+# Ensure row names of poisson_CI match the names of the coefficients
+if (all(rownames(poisson_CI) %in% names(coefficients))) {
+    poisson_CI$Estimate <- exp(coefficients[rownames(poisson_CI)])
+    poisson_CI$Standard_Error <- exp(coefficients[rownames(poisson_CI)])*st_error[rownames(poisson_CI)]
+    poisson_CI$Test_Statistic <- test[rownames(poisson_CI)]  
+    poisson_CI$P_Value <- pvalue[rownames(poisson_CI)]    
+} else {
+    stop("Row names of poisson_CI do not match coefficient names.")
+}
+
+poisson_CI <- poisson_CI[c("literacyno", 
+                           setdiff(rownames(poisson_CI), "literacyno")), ]
+
+poisson_CI <- poisson_CI[c("(Intercept)", 
+                           setdiff(rownames(poisson_CI), "(Intercept)")), ]
+
+rownames(poisson_CI)[rownames(poisson_CI) == "(Intercept)"] <- "Intercept"
+rownames(poisson_CI)[rownames(poisson_CI) == "literacyno"] <- "No Literacy"
+rownames(poisson_CI)[rownames(poisson_CI) == "ageMarried20to22"] <- "Age Married: 20-22"
+rownames(poisson_CI)[rownames(poisson_CI) == "ageMarried22to25"] <- "Age Married: 22-25"
+rownames(poisson_CI)[rownames(poisson_CI) == "ageMarried25+"] <- "Age Married: 25+"
+rownames(poisson_CI)[rownames(poisson_CI) == "regionlisbon"] <- "Region: Lisbon"
+rownames(poisson_CI)[rownames(poisson_CI) == "regionporto"] <- "Region: Porto"
+rownames(poisson_CI)[rownames(poisson_CI) == "region20k+"] <-"Region: Population 20k+"
+rownames(poisson_CI)[rownames(poisson_CI) == "region10-20k"] <- "Region: Population 10-20K"
+
+colnames(poisson_CI)[colnames(poisson_CI) == "Standard_Error"] <- "Standard Error"
+colnames(poisson_CI)[colnames(poisson_CI) == "Test_Statistic"] <- "Test Statistic"
+colnames(poisson_CI)[colnames(poisson_CI) == "P_value"] <- "P-Value"
+
+# Negative Binomial Model
 negbin_mod <- glmmTMB(children ~ literacy + ageMarried + region + offset(logMonthSM), data = portugal, family = nbinom2())
 
-knitr::kable(summary(negbin_mod)$coef, digits = 3)
+# Table For Negtive Binomial: On Natural Scale
+negbin_CI = as.data.frame(exp(confint(negbin_mod)))
+st_error <- summary(negbin_mod)$coefficients$cond[, "Std. Error"]
+test <- summary(negbin_mod)$coefficients$cond[, "z value"]
+pvalue <- summary(negbin_mod)$coefficients$cond[, "Pr(>|z|)"] 
 
+# Ensure row names of negbin_CI match the names of the coefficients
+if (all(rownames(negbin_CI) %in% names(coefficients))) {
+    negbin_CI$Standard_Error <- exp(coefficients[rownames(negbin_CI)])*st_error[rownames(negbin_CI)]
+    negbin_CI$Test_Statistic <- test[rownames(negbin_CI)]
+    negbin_CI$P_value <- pvalue[rownames(negbin_CI)]
+} else {
+    stop("Row names of negbin_CI do not match coefficient names.")
+}
 
-plot_summs(poisson_mod, negbin_mod, omit.corefs = F, model.names = c("w/offset", "w/offest & overdispersion"), exp = F)
+rownames(negbin_CI)[rownames(negbin_CI) == "(Intercept)"] <- "Intercept"
+rownames(negbin_CI)[rownames(negbin_CI) == "literacyno"] <- "No Literacy"
+rownames(negbin_CI)[rownames(negbin_CI) == "ageMarried20to22"] <- "Age Married: 20-22"
+rownames(negbin_CI)[rownames(negbin_CI) == "ageMarried22to25"] <- "Age Married: 22-25"
+rownames(negbin_CI)[rownames(negbin_CI) == "ageMarried25+"] <- "Age Married: 25+"
+rownames(negbin_CI)[rownames(negbin_CI) == "regionlisbon"] <- "Region: Lisbon"
+rownames(negbin_CI)[rownames(negbin_CI) == "regionporto"] <- "Region: Porto"
+rownames(negbin_CI)[rownames(negbin_CI) == "region20k+"] <-"Region: Population 20k+"
+rownames(negbin_CI)[rownames(negbin_CI) == "region10-20k"] <- "Region: Population 10-20K"
+
+colnames(negbin_CI)[colnames(negbin_CI) == "Standard_Error"] <- "Standard Error"
+colnames(negbin_CI)[colnames(negbin_CI) == "Test_Statistic"] <- "Test Statistic"
+colnames(negbin_CI)[colnames(negbin_CI) == "P_value"] <- "P-Value"
 
 ```
+ 
+After fitting the Poisson and Negative Binomial models, we summarized and displayed the coefficient estimates and confidence intervals on the natural scale, along with the standard errors, test statistics, and p-values, in Figures 2 and 3, respectively. Comparing the two tables, we notice that both models have similar coefficient estimates, with differences occurring in the hundredths decimal place. Both models had similarly low standard errors (with slightly larger standard errors for the Negative Binomial model), and both models indicate that the variables *Age Married 20-22*, *Age Married 25+*, and *Region Porto* are insignificant in explaining family size (at a significance level of 0.05). 
 
+```{r}
+knitr::kable(poisson_CI, digits = 3, caption = "... ")
 
+knitr::kable(negbin_CI, digits = 3, caption = "...")
+```
 
+```{r, include=FALSE}
+overdispersion_amount <- 1 / sqrt(confint(negbin_mod, parm = "sigma"))
+overdispersion_amount
+```
 
+Figure 2 compares the exponentiated coefficients (rate ratios) with confidence intervals for Poisson and Negative Binomial models. Both models yield similar coefficient estimates and trends. However, the Negative Binomial model generally displays slightly wider confidence intervals, reflecting its ability to account for overdispersion. For the *Age Married 25+* category, the Negative Binomial model's confidence interval covers less of the line at 1.0 compared to the Poisson model, indicating improved precision. Also the model estimated an overdispersion parameter of 24.4% (CI 21.4%, 27.8%) indicating that birth rates vary by about 24.4% between families. Therefore, we believe a Negative Binomial model is better at explaining variation in family size and it serves as our model choice.  
 
+```{r, fig.pos="H", fig.height=5.5, fig.width=7, fig.align='center'}
+plot_summs(poisson_mod, negbin_mod,
+  omit.coefs = "(Intercept)",
+  model.names = c("Poisson Model", "Negative Binomial"), exp = TRUE) +
+  labs(x = "Exponentiated Coefficients (Growth Factor)", y = "Predictor Levels") +
+  theme_nice() +
+  theme(
+    plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"),
+    axis.text.y = element_text(size = 8)
+  )
+```
 
+# Conclusion
+Overall, the results from our data analysis align with ideas from pre-existing literature and demonstrates a positive progression in selecting an appropriate model to fit the data. Both our original Poisson model and the Negative Binomial model demonstrated generally significant p-values for variables such as literacy and region which is supported by the results of Gutkind’s (1962) and Mahmood et al.’s (2016). However, contrary to our previous literature review, some variable levels did not prove to be as significant as initially thought, such as *Age Married 20-22*, *Age Married 25+*, and  *Region Porto*.
 
+In particular, the variable *literacy* under the Negative Binomial model had an estimated coefficient of 1.126 on the natural scale (see Figure 3). Since this represents a growth factor; the birth rate of uneducated couples compared to their educated counterparts increases by a factor of 1.126, holding all else constant. This trend matches the findings from Mahmood et al.’s (2016) which found that $77\%$ of educated males favoured smaller families compared to only $19.2\%$ of uneducated males $(p < 0.001)$. Additionally, the variable at level *Age Married 22-25* has an estimated coefficient 0.932 (see Figure 3) which is interpreted as a decrease in birth rates by a factor of 0.932 for couples married at an age between 22 to 25 compared to couples married at the age between 0 to 20, holding all else constant. This trend matches the findings from Freedman (1963) which also found an inverse relationship between age of marriage and the birth rates.
+ 
+Our final model suggests that both age at marriage, literacy status, and region play significant roles in shaping family size. Specifically, the results indicate that marrying later as well as higher literacy status is generally associated with having fewer children. Our Negative Binomial model seems to be an appropriate fit for the 1979 Portugal fertility data, demonstrating a significant relationship between literacy, region, and family size, with room for further investigation of the age of a marriage, in order to deeper understand the population behaviors and trends. 
 
+# Citation:
+Freedman, R. (1963). Norms for family size in underdeveloped areas. Proceedings of the Royal Society of London. Series B. Biological Sciences, 159(974), 220–245. https://doi.org/10.1098/rspb.1963.0074 
 
+Gutkind, Peter C. W. (1962). African Urban Family Life: Comment on and Analysis of Some Rural-Urban Differences. Cahiers d’Études Africaines, 3(10), 149–217. http://www.jstor.org/stable/4390830
 
-
-
-
-
-
+Mahmood, H., Khan, Z., & Masood, S. (2016). Effects of male literacy on family size: A cross sectional study conducted in Chakwal city. J Pak Med Assoc, 66(4), 399-403.
